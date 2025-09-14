@@ -1,21 +1,24 @@
 CXX = g++
 CXXFLAGS = -std=c++17 -Wall
-DIR = /home/abhi/ray-tracing
 IMGVIEWER = gwenview
+
+DIR := $(CURDIR)
 
 SRC = $(wildcard $(DIR)/*.cpp)
 OBJ = $(SRC:.cpp=.o)
 IMG = $(DIR)/image.ppm
+BIN = $(DIR)/gen.out
 
 all: $(IMG)
 
-$(IMG): $(OBJ)
-	$(CXX) $(CXXFLAGS) $(OBJ) -o $(DIR)/.gen_tmp.out
-	$(DIR)/.gen_tmp.out > $(IMG)
-	rm -f $(DIR)/.gen_tmp.out
+$(BIN): $(OBJ)
+	$(CXX) $(CXXFLAGS) $(OBJ) -o $(BIN)
+
+$(IMG): $(BIN)
+	$(BIN) > $(IMG)
 
 view: $(IMG)
 	nohup $(IMGVIEWER) $(IMG) >/dev/null 2>&1 &
 
 clean:
-	rm -f $(DIR)/*.o $(IMG) $(DIR)/.gen_tmp.out
+	rm -f $(OBJ) $(IMG) $(BIN)

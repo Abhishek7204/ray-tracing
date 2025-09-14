@@ -25,7 +25,7 @@ public:
   vect operator-=(const vect &vec);
   vect operator/=(double s);
 
-  double len_squared() const;
+  double lenSquared() const;
   double len() const;
 };
 
@@ -63,15 +63,15 @@ inline vect operator/(double s, const vect &vec) {
   return vect(vec[0] / s, vec[1] / s, vec[2] / s);
 }
 
-inline double dot(const vect &vec1, const vect &vec2) {
+inline double dotProduct(const vect &vec1, const vect &vec2) {
   return vec1[0] * vec2[0] + vec1[1] * vec2[1] + vec1[2] * vec2[2];
 }
 
-inline vect cross(const vect &vec1, const vect &vec2) {
+inline vect crossProduct(const vect &vec1, const vect &vec2) {
   return vect(vec1[1] * vec2[2] - vec1[2] * vec2[1],
               vec1[2] * vec2[0] - vec1[0] * vec2[2],
               vec1[0] * vec2[1] - vec1[1] * vec2[0]);
 }
 
-inline vect unit_vect(const vect &vec) { return vec / vec.len(); }
+inline vect unitVector(const vect &vec) { return vec / vec.len(); }
 #endif

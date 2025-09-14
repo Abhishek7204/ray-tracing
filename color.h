@@ -6,6 +6,6 @@
 
 using color = vect;
 
-void print_color(ostream &out, const color &pixel);
+void printColor(ostream &out, const color &pixel);
 
 #endif

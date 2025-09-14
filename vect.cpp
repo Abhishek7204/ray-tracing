@@ -31,8 +31,8 @@ vect vect::operator/=(double s) {
   return *this;
 };
 
-double vect::len_squared() const {
+double vect::lenSquared() const {
   return (v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
 };
 
-double vect::len() const { return std::sqrt(len_squared()); };
+double vect::len() const { return std::sqrt(lenSquared()); };
