@@ -16,9 +16,10 @@ public:
   const point3 &origin() const { return org; }
   const vect &direction() const { return dir; }
 
-  point3 at(double t) { return org + dir * t; }
+  const point3 at(double t) const { return org + dir * t; }
 };
 
 color rayColor(const ray &r);
 
+double hitSphere(const ray &r, const point3 &center, double radius);
 #endif
