@@ -2,6 +2,7 @@
 #define RAY_H
 
 #include "color.h"
+#include "scene_object_list.h"
 #include "vect.h"
 
 class ray {
@@ -19,7 +20,7 @@ public:
   const point3 at(double t) const { return org + dir * t; }
 };
 
-color rayColor(const ray &r);
+color rayColor(const ray &r, const sceneObjectList &world);
 
 double hitSphere(const ray &r, const point3 &center, double radius);
 #endif

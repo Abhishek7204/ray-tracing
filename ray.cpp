@@ -1,4 +1,5 @@
 #include "ray.h"
+#include "rt_utility.h"
 #include "vect.h"
 
 double hitSphere(const ray &r, const point3 &center, double radius) {
@@ -17,12 +18,11 @@ double hitSphere(const ray &r, const point3 &center, double radius) {
   return (-b - sqrt(discriminant)) / (2.0 * a);
 }
 
-color rayColor(const ray &r) {
-  double t = hitSphere(r, point3(0, 0, -1), 0.5);
-  if (t > 0) {
-    vect hitNormal(unitVector(r.at(t) - vect(0, 0, -1)));
-    return 0.5 * color(hitNormal.x() + 1, hitNormal.y() + 1, hitNormal.z() + 1);
-  }
+color rayColor(const ray &r, const sceneObjectList &world) {
+  hitRecord record;
+  if (world.isHit(r, 0, infinity, record))
+    return 0.5 * (record.hitNormal + color(1, 1, 1));
+
   vect unitDirection = unitVector(r.direction());
   auto a = 0.5 * (unitDirection.y() + 1.0);
   return (1 - a) * color(1, 1, 1) + a * color(0.5, 0.7, 1.0);

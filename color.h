@@ -2,7 +2,6 @@
 #define COLOR_H
 
 #include "vect.h"
-#include <iostream>
 
 using color = vect;
 
