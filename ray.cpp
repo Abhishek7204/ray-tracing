@@ -1,6 +1,4 @@
 #include "ray.h"
-#include "rt_utility.h"
-#include "vect.h"
 
 double hitSphere(const ray &r, const point3 &center, double radius) {
   // (C - P).(C - P) = (Cx - x)^2 + (Cy - y)^2 + (Cz - z)^2 = r^2
@@ -20,7 +18,7 @@ double hitSphere(const ray &r, const point3 &center, double radius) {
 
 color rayColor(const ray &r, const sceneObjectList &world) {
   hitRecord record;
-  if (world.isHit(r, 0, infinity, record))
+  if (world.isHit(r, interval(0, infinity), record))
     return 0.5 * (record.hitNormal + color(1, 1, 1));
 
   vect unitDirection = unitVector(r.direction());

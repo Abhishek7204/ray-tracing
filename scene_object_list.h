@@ -13,7 +13,7 @@ public:
 
   void add(shared_ptr<sceneObject> object) { objectList.push_back(object); }
 
-  virtual bool isHit(const ray &r, double tmin, double tmax,
+  virtual bool isHit(const ray &r, interval ray_t,
                      hitRecord &record) const override;
 };
 #endif

@@ -2,6 +2,7 @@
 #define RAY_H
 
 #include "color.h"
+#include "rt_utility.h"
 #include "scene_object_list.h"
 #include "vect.h"
 

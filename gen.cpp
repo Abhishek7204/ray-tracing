@@ -3,10 +3,12 @@
 #include "rt_utility.h"
 #include "scene_object_list.h"
 #include "sphere.h"
+#include <chrono>
 
 using namespace std;
 
 int main() {
+  auto start = chrono::high_resolution_clock::now();
   cout << "P3" << '\n';
 
   // Image
@@ -51,4 +53,7 @@ int main() {
     cout << '\n';
   }
   clog << "\rDone.                    \n";
+  auto stop = chrono::high_resolution_clock::now();
+  chrono::duration<double> duration = stop - start;
+  clog << "Execution time: " << duration.count() << " seconds" << endl;
 }
