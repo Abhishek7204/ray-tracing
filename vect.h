@@ -1,6 +1,7 @@
 #ifndef VECT_H
 #define VECT_H
 
+#include "rt_utility.h"
 #include <cmath>
 #include <iostream>
 
@@ -27,6 +28,9 @@ public:
 
   double lenSquared() const;
   double len() const;
+
+  static vect random();
+  static vect random(double lower, double upper);
 };
 
 using point3 = vect;
@@ -74,4 +78,21 @@ inline vect crossProduct(const vect &vec1, const vect &vec2) {
 }
 
 inline vect unitVector(const vect &vec) { return vec / vec.len(); }
+
+inline vect randomUnitVector() {
+  double lenSq;
+  vect r;
+  do {
+    r = vect::random(-1, 1);
+    lenSq = r.lenSquared();
+  } while (lenSq < 1e-160 || lenSq > 1);
+  return unitVector(r);
+}
+
+inline vect randomOnHemispehre(const vect &normal) {
+  vect direction = randomUnitVector();
+  if (dotProduct(direction, normal) < 0)
+    direction = direction * -1;
+  return direction;
+}
 #endif

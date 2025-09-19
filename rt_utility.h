@@ -1,7 +1,6 @@
 #ifndef RT_UTILITY_H
 #define RT_UTILITY_H
 
-#include "color.h"
 #include "interval.h"
 #include <cmath>
 #include <cstdlib>
@@ -24,7 +23,7 @@ inline double randomDouble() {
   return distribution(generator);
 }
 
-inline double randomDoubleInterval(double lower, double upper) {
+inline double randomDouble(double lower, double upper) {
   return lower + (upper - lower) * randomDouble();
 }
 

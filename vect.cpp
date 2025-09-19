@@ -36,3 +36,11 @@ double vect::lenSquared() const {
 };
 
 double vect::len() const { return std::sqrt(lenSquared()); };
+
+vect vect::random() {
+  return vect(randomDouble(), randomDouble(), randomDouble());
+}
+vect vect::random(double lower, double upper) {
+  return vect(randomDouble(lower, upper), randomDouble(lower, upper),
+              randomDouble(lower, upper));
+}

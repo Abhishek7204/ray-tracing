@@ -1,4 +1,5 @@
 #include "ray.h"
+#include "vect.h"
 
 double hitSphere(const ray &r, const point3 &center, double radius) {
   // (C - P).(C - P) = (Cx - x)^2 + (Cy - y)^2 + (Cz - z)^2 = r^2
@@ -16,10 +17,15 @@ double hitSphere(const ray &r, const point3 &center, double radius) {
   return (-b - sqrt(discriminant)) / (2.0 * a);
 }
 
-color rayColor(const ray &r, const sceneObjectList &world) {
+color rayColor(const ray &r, int depthLeft, const sceneObjectList &world) {
+  if (!depthLeft)
+    return color();
   hitRecord record;
-  if (world.isHit(r, interval(0, infinity), record))
-    return 0.5 * (record.hitNormal + color(1, 1, 1));
+  if (world.isHit(r, interval(0, infinity), record)) {
+    vect direction = randomOnHemispehre(record.hitNormal);
+    return 0.5 *
+           rayColor(ray(record.contactPoint, direction), depthLeft - 1, world);
+  }
 
   vect unitDirection = unitVector(r.direction());
   auto a = 0.5 * (unitDirection.y() + 1.0);

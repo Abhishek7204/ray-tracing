@@ -21,7 +21,7 @@ public:
   const point3 at(double t) const { return org + dir * t; }
 };
 
-color rayColor(const ray &r, const sceneObjectList &world);
+color rayColor(const ray &r, int depthLeft, const sceneObjectList &world);
 
 double hitSphere(const ray &r, const point3 &center, double radius);
 #endif

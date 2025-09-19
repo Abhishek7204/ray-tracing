@@ -12,6 +12,7 @@ int main() {
   cam.aspectRatio = 16.0 / 9.0;
   cam.imgWidth = 400;
   cam.sampleCount = 25;
+  cam.sampleDepth = 10;
 
   // World
   sceneObjectList world;

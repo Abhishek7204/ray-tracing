@@ -37,7 +37,7 @@ void camera::render(const sceneObjectList &world) {
         point3 samplePixel = pixelCenter + xDisplacement + yDisplacement;
         point3 rayDirection = samplePixel - cameraCenter;
         ray r(cameraCenter, rayDirection);
-        totalColor += rayColor(r, world);
+        totalColor += rayColor(r, sampleDepth, world);
       }
       printColor(cout, totalColor / sampleCount);
     }

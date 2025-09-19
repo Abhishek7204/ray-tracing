@@ -16,5 +16,6 @@ public:
   double aspectRatio = 16.0 / 9.0;
   int imgWidth = 400;
   int sampleCount = 5;
+  int sampleDepth = 10;
 };
 #endif
