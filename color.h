@@ -5,6 +5,8 @@
 
 using color = vect;
 
+inline double linearToGamma(double linear) { return sqrt(max(0.0, linear)); }
+
 void printColor(ostream &out, const color &pixel);
 
 #endif

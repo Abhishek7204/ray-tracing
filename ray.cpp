@@ -21,8 +21,8 @@ color rayColor(const ray &r, int depthLeft, const sceneObjectList &world) {
   if (!depthLeft)
     return color();
   hitRecord record;
-  if (world.isHit(r, interval(0, infinity), record)) {
-    vect direction = randomOnHemispehre(record.hitNormal);
+  if (world.isHit(r, interval(0.001, infinity), record)) {
+    vect direction = randomOnHemispehre(record.hitNormal) + record.hitNormal;
     return 0.5 *
            rayColor(ray(record.contactPoint, direction), depthLeft - 1, world);
   }
