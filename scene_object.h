@@ -3,7 +3,9 @@
 
 #include "rt_utility.h"
 #include "vect.h"
+#include <memory>
 
+class material;
 class ray;
 
 class hitRecord {
@@ -11,6 +13,7 @@ public:
   point3 contactPoint;
   vect hitNormal;
   double t;
+  shared_ptr<material> hitMaterial;
 };
 
 class sceneObject {

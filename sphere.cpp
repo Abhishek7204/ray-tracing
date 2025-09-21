@@ -26,5 +26,6 @@ bool sphere::isHit(const ray &r, interval ray_t, hitRecord &record) const {
   record.t = root;
   record.contactPoint = r.at(root);
   record.hitNormal = (record.contactPoint - center) / radius;
+  record.hitMaterial = mat;
   return true;
 };

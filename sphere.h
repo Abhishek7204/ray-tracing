@@ -8,6 +8,7 @@
 class sphere : public sceneObject {
   point3 center;
   double radius;
+  shared_ptr<material> mat;
 
 public:
   sphere(const point3 &center, double radius)

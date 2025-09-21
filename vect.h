@@ -28,6 +28,7 @@ public:
 
   double lenSquared() const;
   double len() const;
+  bool nearZero() const;
 
   static vect random();
   static vect random(double lower, double upper);
