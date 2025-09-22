@@ -96,4 +96,8 @@ inline vect randomOnHemispehre(const vect &normal) {
     direction = direction * -1;
   return direction;
 }
-#endif
+
+inline vect reflection(const vect &normal, const vect &incident) {
+  return incident - 2 * dotProduct(normal, incident) * normal;
+}
+#endif // !VECT_H

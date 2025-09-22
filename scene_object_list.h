@@ -16,4 +16,4 @@ public:
   virtual bool isHit(const ray &r, interval ray_t,
                      hitRecord &record) const override;
 };
-#endif
+#endif // !SCENE_OBJECT_LIST_H

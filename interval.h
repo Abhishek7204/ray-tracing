@@ -21,4 +21,4 @@ public:
   static const interval empty, universe;
 };
 
-#endif
+#endif // !INTERVAL_H

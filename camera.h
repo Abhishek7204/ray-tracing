@@ -18,4 +18,4 @@ public:
   int sampleCount = 5;
   int sampleDepth = 10;
 };
-#endif
+#endif // !CAMERA_H

@@ -27,4 +27,4 @@ inline double randomDouble(double lower, double upper) {
   return lower + (upper - lower) * randomDouble();
 }
 
-#endif
+#endif // !RT_UTILITY_H

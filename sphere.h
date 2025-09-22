@@ -11,10 +11,10 @@ class sphere : public sceneObject {
   shared_ptr<material> mat;
 
 public:
-  sphere(const point3 &center, double radius)
-      : center(center), radius(max(0.0, radius)) {}
+  sphere(const point3 &center, double radius, shared_ptr<material> mat)
+      : center(center), radius(max(0.0, radius)), mat(mat) {}
 
   virtual bool isHit(const ray &r, interval ray_t,
                      hitRecord &record) const override;
 };
-#endif
+#endif // !SPHERE_H

@@ -24,4 +24,4 @@ public:
 color rayColor(const ray &r, int depthLeft, const sceneObjectList &world);
 
 double hitSphere(const ray &r, const point3 &center, double radius);
-#endif
+#endif // !RAY_H

@@ -21,4 +21,4 @@ public:
   virtual ~sceneObject() = default;
   virtual bool isHit(const ray &r, interval ray_t, hitRecord &record) const = 0;
 };
-#endif
+#endif // !SCENE_OBJECT_H
