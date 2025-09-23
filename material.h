@@ -49,4 +49,23 @@ public:
     return (dotProduct(record.hitNormal, fuzzyReflected) > 0);
   };
 };
+
+class dielectric : public material {
+  double reflectiveIndex;
+
+public:
+  dielectric(double reflectiveIndex) : reflectiveIndex(reflectiveIndex) {}
+  bool scatter(const ray &r, const hitRecord &record, color &attenuation,
+               ray &scattered) const override {
+    attenuation = color(1, 1, 1);
+    bool outOfSphere = dotProduct(record.hitNormal, r.direction()) > 0;
+    double ri = (!outOfSphere ? (1.0 / reflectiveIndex) : reflectiveIndex);
+
+    vect normal = (outOfSphere ? -record.hitNormal : record.hitNormal);
+    vect refracted = refract(normal, unitVector(r.direction()), ri);
+
+    scattered = ray(record.contactPoint, refracted);
+    return true;
+  }
+};
 #endif // !MATERIAL_H

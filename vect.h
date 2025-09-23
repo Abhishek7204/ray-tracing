@@ -100,4 +100,12 @@ inline vect randomOnHemispehre(const vect &normal) {
 inline vect reflection(const vect &normal, const vect &incident) {
   return incident - 2 * dotProduct(normal, incident) * normal;
 }
+
+inline vect refract(const vect &normal, const vect &incident,
+                    double refractionRatio) {
+  auto cosTheta = fmin(dotProduct(-incident, normal), 1.0);
+  vect RoutPerp = refractionRatio * (incident + cosTheta * normal);
+  vect RoutParell = -sqrt(abs(1 - RoutPerp.lenSquared())) * normal;
+  return RoutParell + RoutPerp;
+}
 #endif // !VECT_H
