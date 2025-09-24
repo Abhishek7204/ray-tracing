@@ -1,17 +1,12 @@
 #ifndef MATERIAL_H
 #define MATERIAL_H
 
-#include "color.h"
 #include "ray.h"
-#include "scene_object.h"
-#include "vect.h"
 
 class material {
 public:
   virtual bool scatter(const ray &r, const hitRecord &record,
-                       color &attenuation, ray &scattered) const {
-    return false;
-  }
+                       color &attenuation, ray &scattered) const;
 };
 
 class lambertian : public material {
@@ -21,14 +16,7 @@ public:
   lambertian(const color &albedo) : albedo(albedo){};
 
   bool scatter(const ray &r, const hitRecord &record, color &attenuation,
-               ray &scattered) const override {
-    vect scatterDirection = record.hitNormal + randomUnitVector();
-    if (scatterDirection.nearZero())
-      scatterDirection = record.hitNormal;
-    scattered = ray(record.contactPoint, scatterDirection);
-    attenuation = albedo;
-    return true;
-  };
+               ray &scattered) const override;
 };
 
 class metal : public material {
@@ -40,13 +28,15 @@ public:
       : albedo(albedo), fuzzFactor(max(fuzzFactor, 1.0)){};
 
   bool scatter(const ray &r, const hitRecord &record, color &attenuation,
-               ray &scattered) const override {
-    vect reflected = reflection(record.hitNormal, r.direction());
-    vect fuzzyReflected =
-        unitVector(reflected) + fuzzFactor * randomUnitVector();
-    scattered = ray(record.contactPoint, fuzzyReflected);
-    attenuation = albedo;
-    return (dotProduct(record.hitNormal, fuzzyReflected) > 0);
-  };
+               ray &scattered) const override;
+};
+
+class dielectric : public material {
+  double refractiveIndex;
+
+public:
+  dielectric(double refractriveIndex) : refractiveIndex(refractriveIndex) {}
+  bool scatter(const ray &r, const hitRecord &record, color &attenuation,
+               ray &scattered) const override;
 };
 #endif // !MATERIAL_H
