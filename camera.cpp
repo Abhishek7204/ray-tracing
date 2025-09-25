@@ -1,23 +1,30 @@
 #include "camera.h"
 #include "ray.h"
+#include "vect.h"
 
 void camera::initialize() {
   imgHeight = max(1, static_cast<int>(imgWidth / aspectRatio));
 
   // Camera and Viewport
-  cameraCenter = point3(0, 0, 0);
-  double focalLen = 1.0;
-  double vpHeight = 2.0;
+  cameraCenter = lookFrom;
+  double focalLen = (lookFrom - lookAt).len();
+  double heightRatio = tan(verticalFOV / 2);
+  double vpHeight = 2.0 * heightRatio * focalLen;
   double vpWidth = vpHeight * (static_cast<double>(imgWidth) / imgHeight);
 
-  vect vpHorizontal = vect(vpWidth, 0, 0);
-  vect vpVertical = vect(0, -vpHeight, 0);
+  // Basis
+  basisW = unitVector(lookFrom - lookAt);
+  basisU = unitVector(crossProduct(verticalUp, basisW));
+  basisV = crossProduct(basisW, basisU);
+
+  vect vpHorizontal = vpWidth * basisU;
+  vect vpVertical = -vpHeight * basisV;
 
   vpHorizontalDel = vpHorizontal / imgWidth;
   vpVerticalDel = vpVertical / imgHeight;
 
   point3 vpCorner =
-      cameraCenter + vect(0, 0, -focalLen) - vpHorizontal / 2 - vpVertical / 2;
+      cameraCenter + (basisW * -focalLen) - vpHorizontal / 2 - vpVertical / 2;
   vpFirstPixel = vpCorner + (vpHorizontalDel + vpVerticalDel) / 2;
 }
 
