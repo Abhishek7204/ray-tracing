@@ -90,6 +90,16 @@ inline vect randomUnitVector() {
   return unitVector(r);
 }
 
+inline vect randomOnUnitDisk() {
+  double lenSq;
+  vect p;
+  do {
+    p = vect(randomDouble(-1, 1), randomDouble(-1, 1), 0);
+    lenSq = p.lenSquared();
+  } while (lenSq >= 1);
+  return p;
+}
+
 inline vect randomOnHemispehre(const vect &normal) {
   vect direction = randomUnitVector();
   if (dotProduct(direction, normal) < 0)
