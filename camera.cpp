@@ -2,6 +2,7 @@
 #include "ray.h"
 #include "rt_utility.h"
 #include "vect.h"
+#include <chrono>
 
 void camera::initialize() {
   imgHeight = max(1, static_cast<int>(imgWidth / aspectRatio));
@@ -36,8 +37,14 @@ void camera::render(const sceneObjectList &world) {
   initialize();
   cout << "P3" << '\n';
   cout << imgWidth << " " << imgHeight << "\n255\n";
+  auto start = chrono::high_resolution_clock::now();
   for (int h = 0; h < imgHeight; h++) {
-    clog << "\rScanlines remaining: " << (imgHeight - h) << ' ' << flush;
+    auto curr = chrono::high_resolution_clock::now();
+    chrono::duration<double> duration = curr - start;
+    double timePerLine = (h ? duration.count() / h : 0);
+    clog << "\rScanlines remaining: " << (imgHeight - h)
+         << " Expected Remaining Time: " << (imgHeight - h) * timePerLine
+         << " seconds" << flush;
     for (int w = 0; w < imgWidth; w++) {
       point3 pixelCenter =
           vpFirstPixel + w * vpHorizontalDel + h * vpVerticalDel;
@@ -56,7 +63,12 @@ void camera::render(const sceneObjectList &world) {
     }
     cout << '\n';
   }
-  clog << "\rDone.                    \n";
+  clog << "\rDone.                                                            "
+          "\n";
+
+  auto stop = chrono::high_resolution_clock::now();
+  chrono::duration<double> duration = stop - start;
+  clog << "Execution time: " << duration.count() << " seconds" << endl;
 }
 
 point3 camera::defocusDiskSample() const {

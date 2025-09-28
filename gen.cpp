@@ -3,7 +3,6 @@
 #include "rt_utility.h"
 #include "scene_object_list.h"
 #include "sphere.h"
-#include <chrono>
 
 using namespace std;
 
@@ -66,9 +65,5 @@ int main() {
   auto material3 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
   world.add(make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
 
-  auto start = chrono::high_resolution_clock::now();
   cam.render(world);
-  auto stop = chrono::high_resolution_clock::now();
-  chrono::duration<double> duration = stop - start;
-  clog << "Execution time: " << duration.count() << " seconds" << endl;
 }
