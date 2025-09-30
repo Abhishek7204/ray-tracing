@@ -10,7 +10,7 @@ bool lambertian::scatter(const ray &r, const hitRecord &record,
   vect scatterDirection = record.hitNormal + randomUnitVector();
   if (scatterDirection.nearZero())
     scatterDirection = record.hitNormal;
-  scattered = ray(record.contactPoint, scatterDirection);
+  scattered = ray(record.contactPoint, scatterDirection, r.getTime());
   attenuation = albedo;
   return true;
 };
@@ -19,7 +19,7 @@ bool metal::scatter(const ray &r, const hitRecord &record, color &attenuation,
                     ray &scattered) const {
   vect reflected = reflection(record.hitNormal, r.direction());
   vect fuzzyReflected = unitVector(reflected) + fuzzFactor * randomUnitVector();
-  scattered = ray(record.contactPoint, fuzzyReflected);
+  scattered = ray(record.contactPoint, fuzzyReflected, r.getTime());
   attenuation = albedo;
   return (dotProduct(record.hitNormal, fuzzyReflected) > 0);
 };
@@ -33,6 +33,6 @@ bool dielectric::scatter(const ray &r, const hitRecord &record,
   vect normal = (outOfSphere ? -record.hitNormal : record.hitNormal);
   vect refracted = refract(normal, unitVector(r.direction()), ri);
 
-  scattered = ray(record.contactPoint, refracted);
+  scattered = ray(record.contactPoint, refracted, r.getTime());
   return true;
 }

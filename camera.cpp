@@ -50,13 +50,7 @@ void camera::render(const sceneObjectList &world) {
           vpFirstPixel + w * vpHorizontalDel + h * vpVerticalDel;
       color totalColor;
       for (int it = 0; it < sampleCount; it++) {
-        vect xDisplacement(vpHorizontalDel.x() * (randomDouble() - 0.5), 0, 0);
-        vect yDisplacement(0, vpHorizontalDel.y() * (randomDouble() - 0.5), 0);
-        point3 samplePixel = pixelCenter + xDisplacement + yDisplacement;
-        point3 rayOrigin =
-            (defocusAngle > 0 ? defocusDiskSample() : cameraCenter);
-        point3 rayDirection = samplePixel - rayOrigin;
-        ray r(rayOrigin, rayDirection);
+        ray r = getRay(pixelCenter);
         totalColor += rayColor(r, sampleDepth, world);
       }
       printColor(cout, totalColor / sampleCount);
@@ -69,6 +63,16 @@ void camera::render(const sceneObjectList &world) {
   auto stop = chrono::high_resolution_clock::now();
   chrono::duration<double> duration = stop - start;
   clog << "Execution time: " << duration.count() << " seconds" << endl;
+}
+
+ray camera::getRay(point3 pixelCenter) const {
+  vect xDisplacement(vpHorizontalDel.x() * (randomDouble() - 0.5), 0, 0);
+  vect yDisplacement(0, vpHorizontalDel.y() * (randomDouble() - 0.5), 0);
+  point3 samplePixel = pixelCenter + xDisplacement + yDisplacement;
+  point3 rayOrigin = (defocusAngle > 0 ? defocusDiskSample() : cameraCenter);
+  point3 rayDirection = samplePixel - rayOrigin;
+  double rayTime = randomDouble();
+  return ray(rayOrigin, rayDirection, rayTime);
 }
 
 point3 camera::defocusDiskSample() const {

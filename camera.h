@@ -14,6 +14,7 @@ class camera {
 
   void initialize();
   point3 defocusDiskSample() const;
+  ray getRay(point3 pixelCenter) const;
 
 public:
   void render(const sceneObjectList &world);
