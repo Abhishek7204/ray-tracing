@@ -14,9 +14,10 @@ int main() {
   cam.imgWidth = 400;
   cam.sampleCount = 25;
   cam.sampleDepth = 10;
-  cam.lookFrom = point3(-2, 2, 1);
+  // cam.lookFrom = point3(-2, 2, 1);
   cam.lookAt = point3(0, 0, -1);
   cam.verticalUp = vect(0, 1, 0);
+  cam.verticalFOV = 90;
 
   // Materials
   auto material_ground = make_shared<lambertian>(color(0.8, 0.8, 0.0));
@@ -32,6 +33,7 @@ int main() {
   world.add(make_shared<sphere>(point3(0.0, 0.0, -1.2), 0.5, material_center));
   world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.5, material_left));
   world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.4, material_bubble));
-  world.add(make_shared<sphere>(point3(1.0, 0.0, -1.0), 0.5, material_right));
+  world.add(make_shared<sphere>(point3(1.0, 0.0, -1.0), point3(1.0, 0.4, -1.0),
+                                0.5, material_right));
   cam.render(world);
 }

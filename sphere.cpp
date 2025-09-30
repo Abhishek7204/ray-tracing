@@ -8,6 +8,7 @@ bool sphere::isHit(const ray &r, interval ray_t, hitRecord &record) const {
   // t^2 d.d - 2td.(C-Q)+(C-Q).(C-Q) - r^2 = 0
   // a = d.d , b = -2d.(C-Q) , c = (C-Q).(C-Q) - r^2
   // discriminant = sqrt(b^2 - 4ac) no of roots is no of points touching
+  point3 center = centerLocations.at(r.getTime());
   double a = dotProduct(r.direction(), r.direction());
   double b = -2 * dotProduct(r.direction(), center - r.origin());
   double c =
