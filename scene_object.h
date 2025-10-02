@@ -1,6 +1,7 @@
 #ifndef SCENE_OBJECT_H
 #define SCENE_OBJECT_H
 
+#include "aabb.h"
 #include "rt_utility.h"
 #include "vect.h"
 #include <memory>
@@ -19,6 +20,9 @@ public:
 class sceneObject {
 public:
   virtual ~sceneObject() = default;
+
   virtual bool isHit(const ray &r, interval ray_t, hitRecord &record) const = 0;
+
+  virtual aabb boundingBox() const = 0;
 };
 #endif // !SCENE_OBJECT_H

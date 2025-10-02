@@ -1,5 +1,10 @@
 #include "scene_object_list.h"
 
+void sceneObjectList::add(shared_ptr<sceneObject> object) {
+  objectList.push_back(object);
+  bbox = aabb(bbox, object->boundingBox());
+}
+
 bool sceneObjectList::isHit(const ray &r, interval ray_t,
                             hitRecord &record) const {
   hitRecord rec;
