@@ -21,6 +21,19 @@ public:
   bool hit(const ray &r, interval ray_t) const;
 
   interval operator[](int axis) const { return axes[axis]; }
+
+  int longestAxis() {
+    int maxSize = -1, maxAxis = 0;
+    for (int i = 0; i < 3; i++) {
+      if (axes[i].size() > maxSize) {
+        maxSize = axes[i].size();
+        maxAxis = i;
+      }
+    }
+    return maxAxis;
+  }
+
+  static const aabb empty, universe;
 };
 
 #endif // !AABB_H

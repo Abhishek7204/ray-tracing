@@ -19,6 +19,7 @@ public:
   bool surrounds(double x) const { return iMin < x && x < iMax; }
 
   interval expand(double delta) const;
+
   static const interval empty, universe;
 };
 
