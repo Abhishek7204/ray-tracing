@@ -15,6 +15,7 @@ public:
   vect hitNormal;
   double t;
   shared_ptr<material> hitMaterial;
+  double u, v;
 };
 
 class sceneObject {
