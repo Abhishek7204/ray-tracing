@@ -2,6 +2,8 @@
 #define MATERIAL_H
 
 #include "ray.h"
+#include "texture.h"
+#include <memory>
 
 class material {
 public:
@@ -10,10 +12,12 @@ public:
 };
 
 class lambertian : public material {
-  color albedo;
+  shared_ptr<texture> tex;
 
 public:
-  lambertian(const color &albedo) : albedo(albedo){};
+  lambertian(const color &albedo) : tex(make_shared<solidColor>(albedo)){};
+
+  lambertian(shared_ptr<texture> tex) : tex(tex) {}
 
   bool scatter(const ray &r, const hitRecord &record, color &attenuation,
                ray &scattered) const override;

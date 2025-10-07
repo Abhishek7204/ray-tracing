@@ -11,7 +11,7 @@ bool lambertian::scatter(const ray &r, const hitRecord &record,
   if (scatterDirection.nearZero())
     scatterDirection = record.hitNormal;
   scattered = ray(record.contactPoint, scatterDirection, r.getTime());
-  attenuation = albedo;
+  attenuation = tex->value(record.u, record.v, record.contactPoint);
   return true;
 };
 

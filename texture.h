@@ -21,7 +21,9 @@ public:
   solidColor(double red, double green, double blue)
       : solidColor(color(red, green, blue)) {}
 
-  color value(double u, double v, const point3 &p) const { return albedo; }
+  color value(double u, double v, const point3 &p) const override {
+    return albedo;
+  }
 };
 
 class checkerTexture : public texture {
@@ -37,7 +39,7 @@ public:
       : checkerTexture(scale, make_shared<solidColor>(c1),
                        make_shared<solidColor>(c2)) {}
 
-  color value(double u, double v, const point3 &p) const {
+  color value(double u, double v, const point3 &p) const override {
     int x = floor(p.x() / scale);
     int y = floor(p.y() / scale);
     int z = floor(p.z() / scale);
