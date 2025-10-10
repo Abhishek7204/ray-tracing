@@ -2,6 +2,7 @@
 #define TEXTURE_H
 
 #include "color.h"
+#include "rtimage.h"
 #include <cmath>
 #include <memory>
 
@@ -45,6 +46,29 @@ public:
     int z = floor(p.z() / scale);
 
     return ((x + y + z) & 1 ? odd->value(u, v, p) : even->value(u, v, p));
+  }
+};
+
+class imageTexture : public texture {
+  rtwimage img;
+
+public:
+  imageTexture(const char *file) : img(file) {}
+
+  color value(double u, double v, const point3 &p) const override {
+    if (img.height() <= 0)
+      return color(0, 1, 1);
+
+    u = interval(0, 1).clamp(u);
+    v = 1.0 - interval(0, 1).clamp(v);
+
+    auto i = int(u * img.width());
+    auto j = int(v * img.height());
+    auto pixel = img.pixel_data(i, j);
+
+    auto colorScale = 1.0 / 255.0;
+    return color(colorScale * pixel[0], colorScale * pixel[1],
+                 colorScale * pixel[2]);
   }
 };
 #endif // !TEXTURE_H

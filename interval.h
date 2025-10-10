@@ -20,6 +20,8 @@ public:
 
   interval expand(double delta) const;
 
+  double clamp(double x) const;
+
   static const interval empty, universe;
 };
 

@@ -5,6 +5,9 @@
 #include "scene_object_list.h"
 #include "sphere.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#define STBI_FAILURE_USERMSG
+
 using namespace std;
 
 void bouncingSpheres() {
@@ -131,8 +134,35 @@ void threeSpheres() {
   world = sceneObjectList(make_shared<bvh>(world));
   cam.render(world);
 }
+
+void earth() {
+  auto earth_texture = make_shared<imageTexture>("earthmap.jpg");
+  auto earth_surface = make_shared<lambertian>(earth_texture);
+  auto globe = make_shared<sphere>(point3(0, 0, 0), 2, earth_surface);
+
+  camera cam;
+
+  cam.aspectRatio = 16.0 / 9.0;
+  cam.imgWidth = 400;
+  cam.sampleCount = 100;
+  cam.sampleDepth = 50;
+
+  cam.verticalFOV = 20;
+  cam.lookFrom = point3(0, 0, 12);
+  cam.lookAt = point3(0, 0, 0);
+  cam.verticalUp = vect(0, 1, 0);
+
+  cam.defocusAngle = 0;
+
+  cam.render(sceneObjectList(globe));
+}
+
 int main() {
   int choice;
+  vector<string> functions{"bouncingSpheres", "checkedSpheres", "threeSpheres",
+                           "earth"};
+  for (int i = 0; i < (int)functions.size(); i++)
+    clog << i + 1 << " : " << functions[i] << endl;
   clog << "Enter the Choice: ";
   cin >> choice;
   switch (choice) {
@@ -143,6 +173,12 @@ int main() {
     checkedSpheres();
     break;
   case 3:
+    threeSpheres();
+    break;
+  case 4:
+    earth();
+    break;
+  default:
     threeSpheres();
     break;
   }

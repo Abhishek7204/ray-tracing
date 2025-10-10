@@ -44,7 +44,7 @@ bool sphere::isHit(const ray &r, interval ray_t, hitRecord &record) const {
   record.contactPoint = r.at(root);
   record.hitNormal = (record.contactPoint - center) / radius;
   record.hitMaterial = mat;
-  getUV(record.contactPoint, record);
+  getUV(record.hitNormal, record);
   return true;
 };
 
