@@ -2,7 +2,9 @@
 #define TEXTURE_H
 
 #include "color.h"
+#include "perlin.h"
 #include "rtimage.h"
+#include "vect.h"
 #include <cmath>
 #include <memory>
 
@@ -69,6 +71,17 @@ public:
     auto colorScale = 1.0 / 255.0;
     return color(colorScale * pixel[0], colorScale * pixel[1],
                  colorScale * pixel[2]);
+  }
+};
+
+class noiseTexture : public texture {
+  perlinNoise seed;
+
+public:
+  noiseTexture() {}
+
+  color value(double u, double v, const point3 &p) const override {
+    return color(1, 1, 1) * seed.noise(p);
   }
 };
 #endif // !TEXTURE_H

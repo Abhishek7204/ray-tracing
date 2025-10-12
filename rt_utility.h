@@ -2,6 +2,8 @@
 #define RT_UTILITY_H
 
 #include "interval.h"
+#include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <cstdlib>
 #include <iostream>

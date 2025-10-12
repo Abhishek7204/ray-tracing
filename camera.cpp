@@ -2,7 +2,6 @@
 #include "ray.h"
 #include "rt_utility.h"
 #include "vect.h"
-#include <chrono>
 
 void camera::initialize() {
   imgHeight = max(1, static_cast<int>(imgWidth / aspectRatio));
