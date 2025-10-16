@@ -12,7 +12,9 @@ public:
   aabb() = default;
 
   aabb(const interval &x, const interval &y, const interval &z)
-      : axes{x, y, z} {};
+      : axes{x, y, z} {
+    paddingMinimum();
+  };
 
   aabb(const point3 &a, const point3 &b);
 
@@ -22,16 +24,9 @@ public:
 
   interval operator[](int axis) const { return axes[axis]; }
 
-  int longestAxis() {
-    int maxSize = -1, maxAxis = 0;
-    for (int i = 0; i < 3; i++) {
-      if (axes[i].size() > maxSize) {
-        maxSize = axes[i].size();
-        maxAxis = i;
-      }
-    }
-    return maxAxis;
-  }
+  int longestAxis();
+
+  void paddingMinimum();
 
   static const aabb empty, universe;
 };

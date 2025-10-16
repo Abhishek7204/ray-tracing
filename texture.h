@@ -76,12 +76,14 @@ public:
 
 class noiseTexture : public texture {
   perlinNoise seed;
+  double scale;
 
 public:
-  noiseTexture() {}
+  noiseTexture(double scale) : scale(scale) {}
 
   color value(double u, double v, const point3 &p) const override {
-    return color(1, 1, 1) * seed.noise(p);
+    return color(0.5, 0.5, 0.5) *
+           (1 + sin(scale * p.z() + 10 * seed.turbulence(p, 7)));
   }
 };
 #endif // !TEXTURE_H

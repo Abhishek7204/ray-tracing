@@ -4,9 +4,10 @@
 #include "rt_utility.h"
 #include "vect.h"
 #include <cmath>
+
 class perlinNoise {
   static const int pointCount = 256;
-  double randFloat[pointCount];
+  vect randFloat[pointCount];
   int permX[pointCount];
   int permY[pointCount];
   int permZ[pointCount];
@@ -18,21 +19,26 @@ class perlinNoise {
     shuffle(p, p + pointCount, std::default_random_engine(seed));
   }
 
-  static double trilinearInterpretation(double c[2][2][2], double u, double v,
+  static double trilinearInterpretation(vect c[2][2][2], double u, double v,
                                         double w) {
+    double uu = u * u * (3 - 2 * u);
+    double vv = v * v * (3 - 2 * v);
+    double ww = w * w * (3 - 2 * w);
     double sum = 0.0;
     for (int i = 0; i < 2; i++)
       for (int j = 0; j < 2; j++)
-        for (int k = 0; k < 2; k++)
-          sum += (i * u + (1 - i) * (1 - u)) * (j * v + (1 - j) * (1 - v)) *
-                 (k * w + (1 - k) * (1 - w)) * c[i][j][k];
+        for (int k = 0; k < 2; k++) {
+          vect weight(u - i, v - j, w - k);
+          sum += (i * uu + (1 - i) * (1 - uu)) * (j * vv + (1 - j) * (1 - vv)) *
+                 (k * ww + (1 - k) * (1 - ww)) * dotProduct(c[i][j][k], weight);
+        }
     return sum;
   }
 
 public:
   perlinNoise() {
     for (int i = 0; i < pointCount; i++)
-      randFloat[i] = randomDouble();
+      randFloat[i] = unitVector(vect::random(-1, 1));
 
     perlinGenerater(permX);
     perlinGenerater(permY);
@@ -43,14 +49,11 @@ public:
     auto u = p.x() - floor(p.x());
     auto v = p.y() - floor(p.y());
     auto w = p.z() - floor(p.z());
-    u = u * u * (3 - 2 * u);
-    v = v * v * (3 - 2 * v);
-    w = w * w * (3 - 2 * w);
 
     auto i = int(floor(p.x()));
     auto j = int(floor(p.y()));
     auto k = int(floor(p.z()));
-    double c[2][2][2];
+    vect c[2][2][2];
 
     for (int di = 0; di < 2; di++)
       for (int dj = 0; dj < 2; dj++)
@@ -59,6 +62,17 @@ public:
               randFloat[permX[(i + di) & 255] ^ permY[(j + dj) & 255] ^
                         permZ[(k + dk) & 255]];
     return trilinearInterpretation(c, u, v, w);
+  }
+
+  double turbulence(const point3 &p, int depth) const {
+    double sum = 0.0, weight = 1.0;
+    point3 temp = p;
+    for (int i = 0; i < depth; i++) {
+      sum += weight * noise(temp);
+      weight *= 0.5;
+      temp *= 2;
+    }
+    return fabs(sum);
   }
 };
 #endif // !PERLIN_H

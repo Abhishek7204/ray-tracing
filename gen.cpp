@@ -160,7 +160,7 @@ void earth() {
 void perlinSpheres() {
   sceneObjectList world;
 
-  auto pertext = make_shared<noiseTexture>();
+  auto pertext = make_shared<noiseTexture>(4);
   world.add(make_shared<sphere>(point3(0, -1000, 0), 1000,
                                 make_shared<lambertian>(pertext)));
   world.add(make_shared<sphere>(point3(0, 2, 0), 2,

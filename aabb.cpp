@@ -33,6 +33,24 @@ bool aabb::hit(const ray &r, interval ray_t) const {
   return true;
 }
 
+int aabb::longestAxis() {
+  int maxSize = -1, maxAxis = 0;
+  for (int i = 0; i < 3; i++) {
+    if (axes[i].size() > maxSize) {
+      maxSize = axes[i].size();
+      maxAxis = i;
+    }
+  }
+  return maxAxis;
+}
+
+void aabb::paddingMinimum() {
+  double delta = 0.0001;
+  for (int i = 0; i < 3; i++)
+    if (axes[i].size() < delta)
+      axes[i] = axes[i].expand(delta);
+}
+
 const aabb aabb::empty =
     aabb(interval::empty, interval::empty, interval::empty);
 const aabb aabb::universe =

@@ -23,6 +23,7 @@ public:
   vect operator-() const;
   vect operator+=(const vect &vec);
   vect operator*=(const vect &vec);
+  vect operator*=(double s);
   vect operator-=(const vect &vec);
   vect operator/=(double s);
 
@@ -61,10 +62,6 @@ inline vect operator*(double s, const vect &vec) {
 }
 
 inline vect operator/(const vect &vec, double s) {
-  return vect(vec[0] / s, vec[1] / s, vec[2] / s);
-}
-
-inline vect operator/(double s, const vect &vec) {
   return vect(vec[0] / s, vec[1] / s, vec[2] / s);
 }
 

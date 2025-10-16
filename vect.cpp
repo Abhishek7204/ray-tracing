@@ -17,6 +17,13 @@ vect vect::operator*=(const vect &vec) {
   return *this;
 };
 
+vect vect::operator*=(double s) {
+  v[0] *= s;
+  v[1] *= s;
+  v[2] *= s;
+  return *this;
+}
+
 vect vect::operator-=(const vect &vec) {
   v[0] -= vec[0];
   v[1] -= vec[1];
