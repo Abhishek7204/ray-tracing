@@ -12,6 +12,7 @@ class quadrilateral : public sceneObject {
   aabb bbox;
   vect normal;
   double D;
+  vect W;
 
 public:
   quadrilateral(const point3 &Q, const vect &u, const vect &v,
@@ -23,5 +24,7 @@ public:
 
   virtual bool isHit(const ray &r, interval ray_t,
                      hitRecord &rec) const override;
+
+  bool isInside(double alpha, double beta, hitRecord &record) const;
 };
 #endif // !QUAD_H

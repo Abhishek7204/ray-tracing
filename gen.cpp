@@ -1,6 +1,7 @@
 #include "bvh.h"
 #include "camera.h"
 #include "material.h"
+#include "quadrilateral.h"
 #include "rt_utility.h"
 #include "scene_object_list.h"
 #include "sphere.h"
@@ -183,12 +184,51 @@ void perlinSpheres() {
   cam.render(world);
 }
 
+void quadrilaterals() {
+  sceneObjectList world;
+
+  // Materials
+  auto left_red = make_shared<lambertian>(color(1.0, 0.2, 0.2));
+  auto back_green = make_shared<lambertian>(color(0.2, 1.0, 0.2));
+  auto right_blue = make_shared<lambertian>(color(0.2, 0.2, 1.0));
+  auto upper_orange = make_shared<lambertian>(color(1.0, 0.5, 0.0));
+  auto lower_teal = make_shared<lambertian>(color(0.2, 0.8, 0.8));
+
+  // quadrilaterals
+  world.add(make_shared<quadrilateral>(point3(-3, -2, 5), vect(0, 0, -4),
+                                       vect(0, 4, 0), left_red));
+  world.add(make_shared<quadrilateral>(point3(-2, -2, 0), vect(4, 0, 0),
+                                       vect(0, 4, 0), back_green));
+  world.add(make_shared<quadrilateral>(point3(3, -2, 1), vect(0, 0, 4),
+                                       vect(0, 4, 0), right_blue));
+  world.add(make_shared<quadrilateral>(point3(-2, 3, 1), vect(4, 0, 0),
+                                       vect(0, 0, 4), upper_orange));
+  world.add(make_shared<quadrilateral>(point3(-2, -3, 5), vect(4, 0, 0),
+                                       vect(0, 0, -4), lower_teal));
+
+  camera cam;
+
+  cam.aspectRatio = 1.0;
+  cam.imgWidth = 400;
+  cam.sampleCount = 100;
+  cam.sampleDepth = 50;
+
+  cam.verticalFOV = 80;
+  cam.lookFrom = point3(0, 0, 9);
+  cam.lookAt = point3(0, 0, 0);
+  cam.verticalUp = vect(0, 1, 0);
+
+  cam.defocusAngle = 0;
+
+  cam.render(world);
+}
+
 int main() {
   int choice;
   vector<void (*)()> functions{bouncingSpheres, checkedSpheres, threeSpheres,
-                               earth, perlinSpheres};
+                               earth,           perlinSpheres,  quadrilaterals};
   vector<string> scenes{"bouncingSpheres", "checkedSpheres", "threeSpheres",
-                        "earth", "perlinSpheres"};
+                        "earth",           "perlinSpheres",  "quadrilaterals"};
   for (int i = 0; i < (int)functions.size(); i++)
     clog << i + 1 << " : " << scenes[i] << endl;
   clog << "Enter the Choice: ";
