@@ -67,10 +67,10 @@ void bouncingSpheres() {
   cam.lookFrom = point3(13, 2, 3);
   cam.lookAt = point3(0, 0, 0);
   cam.verticalUp = vect(0, 1, 0);
+  cam.backGround = color(0.70, 0.80, 1.00);
 
   cam.defocusAngle = 0.6;
   cam.focusDist = 10.0;
-
   world = sceneObjectList(make_shared<bvh>(world));
   cam.render(world);
 }
@@ -97,6 +97,7 @@ void checkedSpheres() {
   cam.lookFrom = point3(13, 2, 3);
   cam.lookAt = point3(0, 0, 0);
   cam.verticalUp = vect(0, 1, 0);
+  cam.backGround = color(0.70, 0.80, 1.00);
 
   cam.defocusAngle = 0;
 
@@ -112,6 +113,7 @@ void threeSpheres() {
   cam.lookFrom = point3(-2, 2, 1);
   cam.lookAt = point3(0, 0, -1);
   cam.verticalUp = vect(0, 1, 0);
+  cam.backGround = color(0.70, 0.80, 1.00);
 
   // Materials
   auto checker =
@@ -152,6 +154,7 @@ void earth() {
   cam.lookFrom = point3(0, 0, 12);
   cam.lookAt = point3(0, 0, 0);
   cam.verticalUp = vect(0, 1, 0);
+  cam.backGround = color(0.70, 0.80, 1.00);
 
   cam.defocusAngle = 0;
 
@@ -178,6 +181,7 @@ void perlinSpheres() {
   cam.lookFrom = point3(13, 2, 3);
   cam.lookAt = point3(0, 0, 0);
   cam.verticalUp = vect(0, 1, 0);
+  cam.backGround = color(0.70, 0.80, 1.00);
 
   cam.defocusAngle = 0;
 
@@ -217,6 +221,38 @@ void quadrilaterals() {
   cam.lookFrom = point3(0, 0, 9);
   cam.lookAt = point3(0, 0, 0);
   cam.verticalUp = vect(0, 1, 0);
+  cam.backGround = color(0.70, 0.80, 1.00);
+
+  cam.defocusAngle = 0;
+
+  cam.render(world);
+}
+
+void simpleLight() {
+  sceneObjectList world;
+
+  auto pertext = make_shared<noiseTexture>(4);
+  world.add(make_shared<sphere>(point3(0, -1000, 0), 1000,
+                                make_shared<lambertian>(pertext)));
+  world.add(make_shared<sphere>(point3(0, 2, 0), 2,
+                                make_shared<lambertian>(pertext)));
+
+  auto difflight = make_shared<diffuseLight>(color(4, 4, 4));
+  world.add(make_shared<quadrilateral>(point3(3, 1, -2), vect(2, 0, 0),
+                                       vect(0, 2, 0), difflight));
+
+  camera cam;
+
+  cam.aspectRatio = 16.0 / 9.0;
+  cam.imgWidth = 400;
+  cam.sampleCount = 100;
+  cam.sampleDepth = 50;
+  cam.backGround = color(0, 0, 0);
+
+  cam.verticalFOV = 20;
+  cam.lookFrom = point3(26, 3, 6);
+  cam.lookAt = point3(0, 2, 0);
+  cam.verticalUp = vect(0, 1, 0);
 
   cam.defocusAngle = 0;
 
@@ -226,9 +262,11 @@ void quadrilaterals() {
 int main() {
   int choice;
   vector<void (*)()> functions{bouncingSpheres, checkedSpheres, threeSpheres,
-                               earth,           perlinSpheres,  quadrilaterals};
+                               earth,           perlinSpheres,  quadrilaterals,
+                               simpleLight};
   vector<string> scenes{"bouncingSpheres", "checkedSpheres", "threeSpheres",
-                        "earth",           "perlinSpheres",  "quadrilaterals"};
+                        "earth",           "perlinSpheres",  "quadrilaterals",
+                        "simpleLight"};
   for (int i = 0; i < (int)functions.size(); i++)
     clog << i + 1 << " : " << scenes[i] << endl;
   clog << "Enter the Choice: ";

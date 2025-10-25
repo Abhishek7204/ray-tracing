@@ -64,6 +64,28 @@ void camera::render(const sceneObjectList &world) {
   clog << "Execution time: " << duration.count() << " seconds" << endl;
 }
 
+color camera::rayColor(const ray &r, int depthLeft,
+                       const sceneObjectList &world) {
+  if (!depthLeft)
+    return color();
+  hitRecord record;
+  if (world.isHit(r, interval(0.001, infinity), record)) {
+    color attenuation;
+    ray scattered;
+    color emission =
+        record.hitMaterial->emitted(record.u, record.v, record.contactPoint);
+    if (record.hitMaterial->scatter(r, record, attenuation, scattered))
+      return emission + attenuation * rayColor(scattered, depthLeft - 1, world);
+    return emission;
+  } else {
+    return backGround;
+  }
+
+  vect unitDirection = unitVector(r.direction());
+  auto a = 0.5 * (unitDirection.y() + 1.0);
+  return (1 - a) * color(1, 1, 1) + a * color(0.5, 0.7, 1.0);
+}
+
 ray camera::getRay(point3 pixelCenter) const {
   vect xDisplacement(vpHorizontalDel.x() * (randomDouble() - 0.5), 0, 0);
   vect yDisplacement(0, vpHorizontalDel.y() * (randomDouble() - 0.5), 0);

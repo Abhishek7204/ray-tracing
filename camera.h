@@ -1,6 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
+#include "color.h"
+#include "material.h"
 #include "rt_utility.h"
 #include "scene_object_list.h"
 
@@ -15,6 +17,7 @@ class camera {
   void initialize();
   point3 defocusDiskSample() const;
   ray getRay(point3 pixelCenter) const;
+  color rayColor(const ray &r, int depthLeft, const sceneObjectList &world);
 
 public:
   void render(const sceneObjectList &world);
@@ -26,6 +29,7 @@ public:
   point3 lookFrom = point3(0, 0, 0);
   point3 lookAt = point3(0, 0, -1);
   point3 verticalUp = point3(0, 1, 0);
+  color backGround;
 
   double defocusAngle = 0;
   double focusDist = 10;

@@ -1,5 +1,4 @@
 #include "ray.h"
-#include "material.h"
 #include "vect.h"
 
 double hitSphere(const ray &r, const point3 &center, double radius) {
@@ -16,21 +15,4 @@ double hitSphere(const ray &r, const point3 &center, double radius) {
   if (discriminant < 0)
     return -1.0;
   return (-b - sqrt(discriminant)) / (2.0 * a);
-}
-
-color rayColor(const ray &r, int depthLeft, const sceneObjectList &world) {
-  if (!depthLeft)
-    return color();
-  hitRecord record;
-  if (world.isHit(r, interval(0.001, infinity), record)) {
-    color attenuation;
-    ray scattered;
-    if (record.hitMaterial->scatter(r, record, attenuation, scattered))
-      return attenuation * rayColor(scattered, depthLeft - 1, world);
-    return color();
-  }
-
-  vect unitDirection = unitVector(r.direction());
-  auto a = 0.5 * (unitDirection.y() + 1.0);
-  return (1 - a) * color(1, 1, 1) + a * color(0.5, 0.7, 1.0);
 }
