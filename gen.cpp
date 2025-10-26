@@ -259,14 +259,53 @@ void simpleLight() {
   cam.render(world);
 }
 
+void cornellBox() {
+  sceneObjectList world;
+
+  auto red = make_shared<lambertian>(color(.65, .05, .05));
+  auto white = make_shared<lambertian>(color(.73, .73, .73));
+  auto green = make_shared<lambertian>(color(.12, .45, .15));
+  auto light = make_shared<diffuseLight>(color(15, 15, 15));
+
+  world.add(make_shared<quadrilateral>(point3(555, 0, 0), vect(0, 555, 0),
+                                       vect(0, 0, 555), green));
+  world.add(make_shared<quadrilateral>(point3(0, 0, 0), vect(0, 555, 0),
+                                       vect(0, 0, 555), red));
+  world.add(make_shared<quadrilateral>(point3(343, 554, 332), vect(-130, 0, 0),
+                                       vect(0, 0, -105), light));
+  world.add(make_shared<quadrilateral>(point3(0, 0, 0), vect(555, 0, 0),
+                                       vect(0, 0, 555), white));
+  world.add(make_shared<quadrilateral>(point3(555, 555, 555), vect(-555, 0, 0),
+                                       vect(0, 0, -555), white));
+  world.add(make_shared<quadrilateral>(point3(0, 0, 555), vect(555, 0, 0),
+                                       vect(0, 555, 0), white));
+
+  camera cam;
+
+  cam.aspectRatio = 1.0;
+  cam.imgWidth = 600;
+  cam.sampleCount = 200;
+  cam.sampleDepth = 50;
+  cam.backGround = color(0, 0, 0);
+
+  cam.verticalFOV = 40;
+  cam.lookFrom = point3(278, 278, -800);
+  cam.lookAt = point3(278, 278, 0);
+  cam.verticalUp = vect(0, 1, 0);
+
+  cam.defocusAngle = 0;
+
+  cam.render(world);
+}
+
 int main() {
   int choice;
   vector<void (*)()> functions{bouncingSpheres, checkedSpheres, threeSpheres,
                                earth,           perlinSpheres,  quadrilaterals,
-                               simpleLight};
+                               simpleLight,     cornellBox};
   vector<string> scenes{"bouncingSpheres", "checkedSpheres", "threeSpheres",
                         "earth",           "perlinSpheres",  "quadrilaterals",
-                        "simpleLight"};
+                        "simpleLight",     "cornellBox"};
   for (int i = 0; i < (int)functions.size(); i++)
     clog << i + 1 << " : " << scenes[i] << endl;
   clog << "Enter the Choice: ";

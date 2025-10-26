@@ -2,6 +2,8 @@
 #include "ray.h"
 #include "rt_utility.h"
 #include "vect.h"
+#include <atomic>
+#include <omp.h>
 
 void camera::initialize() {
   imgHeight = max(1, static_cast<int>(imgWidth / aspectRatio));
@@ -34,34 +36,47 @@ void camera::initialize() {
 
 void camera::render(const sceneObjectList &world) {
   initialize();
-  cout << "P3" << '\n';
-  cout << imgWidth << " " << imgHeight << "\n255\n";
-  auto start = chrono::high_resolution_clock::now();
+  std::cout << "P3\n" << imgWidth << " " << imgHeight << "\n255\n";
+
+  // 2D buffer to hold colors
+  std::vector<std::vector<color>> framebuffer(imgHeight,
+                                              std::vector<color>(imgWidth));
+
+  auto start = std::chrono::high_resolution_clock::now();
+
+  // Parallelize the loop over scanlines using OpenMP
+  atomic<int> scanLinesLeft = imgHeight;
+#pragma omp parallel for schedule(dynamic)
   for (int h = 0; h < imgHeight; h++) {
-    auto curr = chrono::high_resolution_clock::now();
-    chrono::duration<double> duration = curr - start;
-    double timePerLine = (h ? duration.count() / h : 0);
-    clog << "\rScanlines remaining: " << (imgHeight - h)
-         << " Expected Remaining Time: " << (imgHeight - h) * timePerLine
-         << " seconds" << flush;
     for (int w = 0; w < imgWidth; w++) {
       point3 pixelCenter =
           vpFirstPixel + w * vpHorizontalDel + h * vpVerticalDel;
-      color totalColor;
+      color totalColor(0, 0, 0);
       for (int it = 0; it < sampleCount; it++) {
         ray r = getRay(pixelCenter);
         totalColor += rayColor(r, sampleDepth, world);
       }
-      printColor(cout, totalColor / sampleCount);
+      framebuffer[h][w] = totalColor / sampleCount;
     }
-    cout << '\n';
+    scanLinesLeft--;
   }
-  clog << "\rDone.                                                            "
-          "\n";
 
-  auto stop = chrono::high_resolution_clock::now();
-  chrono::duration<double> duration = stop - start;
-  clog << "Execution time: " << duration.count() << " seconds" << endl;
+  // Sequential output of buffered pixels to preserve order
+  for (int h = 0; h < imgHeight; h++) {
+
+    for (int w = 0; w < imgWidth; w++) {
+      printColor(std::cout, framebuffer[h][w]);
+    }
+    std::cout << '\n';
+  }
+
+  std::clog << "\rDone.                                                        "
+               "    \n";
+
+  auto stop = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> duration = stop - start;
+  std::clog << "Execution time: " << duration.count() << " seconds"
+            << std::endl;
 }
 
 color camera::rayColor(const ray &r, int depthLeft,

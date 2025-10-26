@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Wno-unused-but-set-variable
+CXXFLAGS = -std=c++17 -Wall -Wno-unused-but-set-variable -fopenmp
 IMGVIEWER = gwenview
 
 DIR := $(CURDIR)
