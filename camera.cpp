@@ -38,32 +38,40 @@ void camera::render(const sceneObjectList &world) {
   initialize();
   std::cout << "P3\n" << imgWidth << " " << imgHeight << "\n255\n";
 
-  // 2D buffer to hold colors
   std::vector<std::vector<color>> framebuffer(imgHeight,
                                               std::vector<color>(imgWidth));
 
   auto start = std::chrono::high_resolution_clock::now();
 
-  // Parallelize the loop over scanlines using OpenMP
-  atomic<int> scanLinesLeft = imgHeight;
-#pragma omp parallel for schedule(dynamic)
-  for (int h = 0; h < imgHeight; h++) {
-    for (int w = 0; w < imgWidth; w++) {
-      point3 pixelCenter =
-          vpFirstPixel + w * vpHorizontalDel + h * vpVerticalDel;
-      color totalColor(0, 0, 0);
-      for (int it = 0; it < sampleCount; it++) {
-        ray r = getRay(pixelCenter);
-        totalColor += rayColor(r, sampleDepth, world);
+  int scanLinesLeft = imgHeight;
+#pragma omp parallel
+  {
+#pragma omp for schedule(dynamic)
+    for (int h = 0; h < imgHeight; h++) {
+      for (int w = 0; w < imgWidth; w++) {
+        point3 pixelCenter =
+            vpFirstPixel + w * vpHorizontalDel + h * vpVerticalDel;
+        color totalColor(0, 0, 0);
+        for (int it = 0; it < sampleCount; it++) {
+          ray r = getRay(pixelCenter);
+          totalColor += rayColor(r, sampleDepth, world);
+        }
+        framebuffer[h][w] = totalColor / sampleCount;
       }
-      framebuffer[h][w] = totalColor / sampleCount;
+#pragma omp critical
+      {
+        auto curr = chrono::high_resolution_clock::now();
+        chrono::duration<double> duration = curr - start;
+        scanLinesLeft--;
+        double timePerLine = duration.count() / (imgHeight - scanLinesLeft);
+        clog << "\rScanlines Left : " << scanLinesLeft
+             << " Execution Time Left : " << timePerLine * scanLinesLeft
+             << " seconds  " << flush;
+      }
     }
-    scanLinesLeft--;
   }
 
-  // Sequential output of buffered pixels to preserve order
   for (int h = 0; h < imgHeight; h++) {
-
     for (int w = 0; w < imgWidth; w++) {
       printColor(std::cout, framebuffer[h][w]);
     }

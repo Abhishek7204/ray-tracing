@@ -51,6 +51,12 @@ void aabb::paddingMinimum() {
       axes[i] = axes[i].expand(delta);
 }
 
+aabb operator+(const aabb &bbox, const vect &offset) {
+  return aabb(bbox[0] + offset.x(), bbox[1] + offset.y(), bbox[2] + offset.z());
+}
+
+aabb operator+(const vect &offset, const aabb &bbox) { return bbox + offset; }
+
 const aabb aabb::empty =
     aabb(interval::empty, interval::empty, interval::empty);
 const aabb aabb::universe =

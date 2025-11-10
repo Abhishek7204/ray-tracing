@@ -279,7 +279,9 @@ void cornellBox() {
                                        vect(0, 0, -555), white));
   world.add(make_shared<quadrilateral>(point3(0, 0, 555), vect(555, 0, 0),
                                        vect(0, 555, 0), white));
+  world.add(box(point3(130, 0, 65), point3(295, 165, 230), white));
 
+  world.add(box(point3(265, 0, 295), point3(430, 330, 460), white));
   camera cam;
 
   cam.aspectRatio = 1.0;

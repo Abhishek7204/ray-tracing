@@ -31,4 +31,8 @@ public:
   static const aabb empty, universe;
 };
 
+aabb operator+(const aabb &bbox, const vect &offset);
+
+aabb operator+(const vect &offset, const aabb &bbox);
+
 #endif // !AABB_H

@@ -26,4 +26,20 @@ public:
 
   virtual aabb boundingBox() const = 0;
 };
+
+class translate : public sceneObject {
+  shared_ptr<sceneObject> object;
+  vect offset;
+  aabb bbox;
+
+public:
+  translate(shared_ptr<sceneObject> object, const vect &offset)
+      : object(object), offset(offset) {
+    bbox = object->boundingBox() + offset;
+  }
+
+  aabb boundingBox() const override { return bbox; }
+
+  bool isHit(const ray &r, interval ray_t, hitRecord &record) const override;
+};
 #endif // !SCENE_OBJECT_H

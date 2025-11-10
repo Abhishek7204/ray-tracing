@@ -25,4 +25,7 @@ public:
   static const interval empty, universe;
 };
 
+interval operator+(const interval &ival, double displacement);
+
+interval operator+(double displacement, const interval &ival);
 #endif // !INTERVAL_H
