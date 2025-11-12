@@ -42,4 +42,18 @@ public:
 
   bool isHit(const ray &r, interval ray_t, hitRecord &record) const override;
 };
+
+class rotateY : public sceneObject {
+  shared_ptr<sceneObject> object;
+  double sinTheta;
+  double cosTheta;
+  aabb bbox;
+
+public:
+  rotateY(shared_ptr<sceneObject> object, double angle);
+
+  bool isHit(const ray &r, interval ray_t, hitRecord &record) const override;
+
+  aabb boundingBox() const override { return bbox; }
+};
 #endif // !SCENE_OBJECT_H

@@ -3,8 +3,10 @@
 #include "material.h"
 #include "quadrilateral.h"
 #include "rt_utility.h"
+#include "scene_object.h"
 #include "scene_object_list.h"
 #include "sphere.h"
+#include "volumes.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_FAILURE_USERMSG
@@ -279,9 +281,70 @@ void cornellBox() {
                                        vect(0, 0, -555), white));
   world.add(make_shared<quadrilateral>(point3(0, 0, 555), vect(555, 0, 0),
                                        vect(0, 555, 0), white));
-  world.add(box(point3(130, 0, 65), point3(295, 165, 230), white));
+  shared_ptr<sceneObject> box1 =
+      box(point3(0, 0, 0), point3(165, 330, 165), white);
+  box1 = make_shared<rotateY>(box1, 15);
+  box1 = make_shared<translate>(box1, vect(265, 0, 295));
+  world.add(box1);
 
-  world.add(box(point3(265, 0, 295), point3(430, 330, 460), white));
+  shared_ptr<sceneObject> box2 =
+      box(point3(0, 0, 0), point3(165, 165, 165), white);
+  box2 = make_shared<rotateY>(box2, -18);
+  box2 = make_shared<translate>(box2, vect(130, 0, 65));
+  world.add(box2);
+
+  camera cam;
+
+  cam.aspectRatio = 1.0;
+  cam.imgWidth = 600;
+  cam.sampleCount = 200;
+  cam.sampleDepth = 50;
+  cam.backGround = color(0, 0, 0);
+
+  cam.verticalFOV = 40;
+  cam.lookFrom = point3(278, 278, -800);
+  cam.lookAt = point3(278, 278, 0);
+  cam.verticalUp = vect(0, 1, 0);
+
+  cam.defocusAngle = 0;
+
+  cam.render(world);
+}
+
+void cornellSmoke() {
+  sceneObjectList world;
+
+  auto red = make_shared<lambertian>(color(.65, .05, .05));
+  auto white = make_shared<lambertian>(color(.73, .73, .73));
+  auto green = make_shared<lambertian>(color(.12, .45, .15));
+  auto light = make_shared<diffuseLight>(color(7, 7, 7));
+
+  world.add(make_shared<quadrilateral>(point3(555, 0, 0), vect(0, 555, 0),
+                                       vect(0, 0, 555), green));
+  world.add(make_shared<quadrilateral>(point3(0, 0, 0), vect(0, 555, 0),
+                                       vect(0, 0, 555), red));
+  world.add(make_shared<quadrilateral>(point3(113, 554, 127), vect(330, 0, 0),
+                                       vect(0, 0, 305), light));
+  world.add(make_shared<quadrilateral>(point3(0, 555, 0), vect(555, 0, 0),
+                                       vect(0, 0, 555), white));
+  world.add(make_shared<quadrilateral>(point3(0, 0, 0), vect(555, 0, 0),
+                                       vect(0, 0, 555), white));
+  world.add(make_shared<quadrilateral>(point3(0, 0, 555), vect(555, 0, 0),
+                                       vect(0, 555, 0), white));
+
+  shared_ptr<sceneObject> box1 =
+      box(point3(0, 0, 0), point3(165, 330, 165), white);
+  box1 = make_shared<rotateY>(box1, 15);
+  box1 = make_shared<translate>(box1, vect(265, 0, 295));
+
+  shared_ptr<sceneObject> box2 =
+      box(point3(0, 0, 0), point3(165, 165, 165), white);
+  box2 = make_shared<rotateY>(box2, -18);
+  box2 = make_shared<translate>(box2, vect(130, 0, 65));
+
+  world.add(make_shared<volumes>(box1, 0.01, color(0, 0, 0)));
+  world.add(make_shared<volumes>(box2, 0.01, color(1, 1, 1)));
+
   camera cam;
 
   cam.aspectRatio = 1.0;
@@ -304,10 +367,10 @@ int main() {
   int choice;
   vector<void (*)()> functions{bouncingSpheres, checkedSpheres, threeSpheres,
                                earth,           perlinSpheres,  quadrilaterals,
-                               simpleLight,     cornellBox};
+                               simpleLight,     cornellBox,     cornellSmoke};
   vector<string> scenes{"bouncingSpheres", "checkedSpheres", "threeSpheres",
                         "earth",           "perlinSpheres",  "quadrilaterals",
-                        "simpleLight",     "cornellBox"};
+                        "simpleLight",     "cornellBox",     "cornellSmoke"};
   for (int i = 0; i < (int)functions.size(); i++)
     clog << i + 1 << " : " << scenes[i] << endl;
   clog << "Enter the Choice: ";

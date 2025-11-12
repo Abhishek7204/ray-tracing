@@ -1,4 +1,5 @@
 #include "material.h"
+#include "vect.h"
 
 bool material::scatter(const ray &r, const hitRecord &record,
                        color &attenuation, ray &scattered) const {
@@ -34,5 +35,12 @@ bool dielectric::scatter(const ray &r, const hitRecord &record,
   vect refracted = refract(normal, unitVector(r.direction()), ri);
 
   scattered = ray(record.contactPoint, refracted, r.getTime());
+  return true;
+}
+
+bool isotropic::scatter(const ray &r, const hitRecord &record,
+                        color &attenuation, ray &scattered) const {
+  scattered = ray(record.contactPoint, randomUnitVector(), r.getTime());
+  attenuation = tex->value(record.u, record.v, record.contactPoint);
   return true;
 }

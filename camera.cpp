@@ -2,7 +2,6 @@
 #include "ray.h"
 #include "rt_utility.h"
 #include "vect.h"
-#include <atomic>
 #include <omp.h>
 
 void camera::initialize() {
@@ -44,30 +43,27 @@ void camera::render(const sceneObjectList &world) {
   auto start = std::chrono::high_resolution_clock::now();
 
   int scanLinesLeft = imgHeight;
-#pragma omp parallel
-  {
-#pragma omp for schedule(dynamic)
-    for (int h = 0; h < imgHeight; h++) {
-      for (int w = 0; w < imgWidth; w++) {
-        point3 pixelCenter =
-            vpFirstPixel + w * vpHorizontalDel + h * vpVerticalDel;
-        color totalColor(0, 0, 0);
-        for (int it = 0; it < sampleCount; it++) {
-          ray r = getRay(pixelCenter);
-          totalColor += rayColor(r, sampleDepth, world);
-        }
-        framebuffer[h][w] = totalColor / sampleCount;
+#pragma omp parallel for schedule(dynamic)
+  for (int h = 0; h < imgHeight; h++) {
+    for (int w = 0; w < imgWidth; w++) {
+      point3 pixelCenter =
+          vpFirstPixel + w * vpHorizontalDel + h * vpVerticalDel;
+      color totalColor(0, 0, 0);
+      for (int it = 0; it < sampleCount; it++) {
+        ray r = getRay(pixelCenter);
+        totalColor += rayColor(r, sampleDepth, world);
       }
+      framebuffer[h][w] = totalColor / sampleCount;
+    }
 #pragma omp critical
-      {
-        auto curr = chrono::high_resolution_clock::now();
-        chrono::duration<double> duration = curr - start;
-        scanLinesLeft--;
-        double timePerLine = duration.count() / (imgHeight - scanLinesLeft);
-        clog << "\rScanlines Left : " << scanLinesLeft
-             << " Execution Time Left : " << timePerLine * scanLinesLeft
-             << " seconds  " << flush;
-      }
+    {
+      auto curr = chrono::high_resolution_clock::now();
+      chrono::duration<double> duration = curr - start;
+      scanLinesLeft--;
+      double timePerLine = duration.count() / (imgHeight - scanLinesLeft);
+      clog << "\rScanlines Left : " << scanLinesLeft
+           << " Execution Time Left : " << timePerLine * scanLinesLeft
+           << " seconds  " << flush;
     }
   }
 

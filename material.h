@@ -61,4 +61,15 @@ public:
     return tex->value(u, v, p);
   }
 };
+
+class isotropic : public material {
+  shared_ptr<texture> tex;
+
+public:
+  isotropic(const color &albedo) : tex(make_shared<solidColor>(albedo)) {}
+  isotropic(shared_ptr<texture> tex) : tex(tex) {}
+
+  bool scatter(const ray &r, const hitRecord &record, color &attenuation,
+               ray &scattered) const override;
+};
 #endif // !MATERIAL_H
