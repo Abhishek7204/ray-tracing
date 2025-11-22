@@ -2,6 +2,7 @@
 #include "ray.h"
 #include "rt_utility.h"
 #include "vect.h"
+#include <atomic>
 #include <omp.h>
 
 void camera::initialize() {
@@ -42,7 +43,7 @@ void camera::render(const sceneObjectList &world) {
 
   auto start = std::chrono::high_resolution_clock::now();
 
-  int scanLinesLeft = imgHeight;
+  atomic<int> scanLinesLeft = imgHeight;
 #pragma omp parallel for schedule(dynamic)
   for (int h = 0; h < imgHeight; h++) {
     for (int w = 0; w < imgWidth; w++) {
@@ -55,16 +56,8 @@ void camera::render(const sceneObjectList &world) {
       }
       framebuffer[h][w] = totalColor / sampleCount;
     }
-#pragma omp critical
-    {
-      auto curr = chrono::high_resolution_clock::now();
-      chrono::duration<double> duration = curr - start;
-      scanLinesLeft--;
-      double timePerLine = duration.count() / (imgHeight - scanLinesLeft);
-      clog << "\rScanlines Left : " << scanLinesLeft
-           << " Execution Time Left : " << timePerLine * scanLinesLeft
-           << " seconds  " << flush;
-    }
+    scanLinesLeft--;
+    clog << "\rScanlines Left : " << scanLinesLeft << "  " << flush;
   }
 
   for (int h = 0; h < imgHeight; h++) {
@@ -85,24 +78,25 @@ void camera::render(const sceneObjectList &world) {
 
 color camera::rayColor(const ray &r, int depthLeft,
                        const sceneObjectList &world) {
-  if (!depthLeft)
+  if (depthLeft <= 0)
     return color();
   hitRecord record;
-  if (world.isHit(r, interval(0.001, infinity), record)) {
-    color attenuation;
-    ray scattered;
-    color emission =
-        record.hitMaterial->emitted(record.u, record.v, record.contactPoint);
-    if (record.hitMaterial->scatter(r, record, attenuation, scattered))
-      return emission + attenuation * rayColor(scattered, depthLeft - 1, world);
-    return emission;
-  } else {
-    return backGround;
-  }
 
-  vect unitDirection = unitVector(r.direction());
-  auto a = 0.5 * (unitDirection.y() + 1.0);
-  return (1 - a) * color(1, 1, 1) + a * color(0.5, 0.7, 1.0);
+  if (!world.isHit(r, interval(0.001, infinity), record))
+    return backGround;
+
+  ray scattered;
+  color attenuation;
+  color color_from_emission =
+      record.hitMaterial->emitted(record.u, record.v, record.contactPoint);
+
+  if (!record.hitMaterial->scatter(r, record, attenuation, scattered))
+    return color_from_emission;
+
+  color color_from_scatter =
+      attenuation * rayColor(scattered, depthLeft - 1, world);
+
+  return color_from_emission + color_from_scatter;
 }
 
 ray camera::getRay(point3 pixelCenter) const {
